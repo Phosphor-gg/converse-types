@@ -207,3 +207,19 @@ pub fn is_valid_hobby(hobby: &str) -> bool {
         .iter()
         .any(|&h| h.eq_ignore_ascii_case(hobby))
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GuildProfileConfig {
+    pub id: i64,
+    pub guild_id: String,
+    pub channel_id: Option<String>,
+    pub create_profile_channel_id: Option<String>,
+    pub created_at: chrono::NaiveDateTime,
+    pub updated_at: chrono::NaiveDateTime,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct UpdateGuildProfileConfigRequest {
+    pub channel_id: Option<String>,
+    pub create_profile_channel_id: Option<String>,
+}
