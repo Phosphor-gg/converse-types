@@ -1,0 +1,6 @@
+/target
+.claude
+.idea
+*.sqlite
+volumes
+.env
