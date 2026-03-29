@@ -214,6 +214,8 @@ pub struct GuildProfileConfig {
     pub guild_id: String,
     pub channel_id: Option<String>,
     pub create_profile_channel_id: Option<String>,
+    pub swipe_channel_id: Option<String>,
+    pub queue_channel_id: Option<String>,
     pub created_at: chrono::NaiveDateTime,
     pub updated_at: chrono::NaiveDateTime,
 }
@@ -222,4 +224,6 @@ pub struct GuildProfileConfig {
 pub struct UpdateGuildProfileConfigRequest {
     pub channel_id: Option<String>,
     pub create_profile_channel_id: Option<String>,
+    pub swipe_channel_id: Option<String>,
+    pub queue_channel_id: Option<String>,
 }
