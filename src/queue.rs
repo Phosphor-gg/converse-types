@@ -21,6 +21,8 @@ pub struct QueueJoinResponse {
     pub member: QueueMember,
     /// Some(discord_id) when an instant match was found.
     pub matched_discord_id: Option<String>,
+    /// Some(match_id) when an instant match was found.
+    pub match_id: Option<i64>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
