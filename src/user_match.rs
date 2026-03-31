@@ -7,7 +7,7 @@ pub struct UserMatch {
     pub id: i64,
     pub from_user_id: i64,
     pub to_user_id: i64,
-    pub is_active: bool,
+    pub thread_channel_id: Option<i64>,
     pub created_at: NaiveDateTime,
 }
 
@@ -52,8 +52,8 @@ pub struct SwipeAction {
 
 /// Returned from match-related endpoints.
 ///
-/// When `is_accepted = true`:  `match_id` is `Some`, `pending_token` is `None`.
-/// When `is_accepted = false`: `match_id` is `None`, `pending_token` is `Some` (UUID).
+/// When `match_id` is `Some`: the match exists in the DB (accepted connection).
+/// When `pending_token` is `Some`: the request is pending in Redis (awaiting the other user).
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MatchResponse {
     /// Database row ID — `Some` only when the match is accepted.
@@ -62,7 +62,5 @@ pub struct MatchResponse {
     pub pending_token: Option<String>,
     pub from_discord_id: String,
     pub to_discord_id: String,
-    /// `true` = accepted connection in DB, `false` = pending request in Redis.
-    pub is_accepted: bool,
     pub created_at: NaiveDateTime,
 }
