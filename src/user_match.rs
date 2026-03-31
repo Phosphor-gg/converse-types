@@ -12,19 +12,20 @@ pub struct UserMatch {
 }
 
 /// A pending match request stored in Redis with a 24-hour TTL.
-/// The key is "converse:match_request:{lo_user_id}:{hi_user_id}".
+/// Keyed by `token` (UUID v4). A reverse lookup from (lo_id, hi_id) → token is
+/// also stored so mutual matches can be detected without scanning Redis.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PendingMatchRequest {
-    /// Normalized: lo_user_id < hi_user_id
+    /// Opaque UUID identifying this request.
+    pub token: String,
+    /// Normalized: lo_user_id < hi_user_id (internal DB user IDs).
     pub lo_user_id: i64,
     pub hi_user_id: i64,
-    /// Discord ID of the user who initiated the request
+    /// Discord ID of the user who initiated the request.
     pub from_discord_id: String,
-    /// Discord ID of the target user
+    /// Discord ID of the target user.
     pub to_discord_id: String,
-    /// Optional guild context for the bot to use
-    pub guild_id: Option<String>,
-    /// Unix timestamp of when the request was created
+    /// Unix timestamp of when the request was created.
     pub created_at: i64,
 }
 
@@ -49,15 +50,19 @@ pub struct SwipeAction {
     pub action: SwipeActionType,
 }
 
-/// Returned from match-related endpoints. Represents either a pending request or an accepted connection.
+/// Returned from match-related endpoints.
+///
+/// When `is_accepted = true`:  `match_id` is `Some`, `pending_token` is `None`.
+/// When `is_accepted = false`: `match_id` is `None`, `pending_token` is `Some` (UUID).
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MatchResponse {
-    pub match_id: i64,
-    pub from_user_id: i64,
-    pub to_user_id: i64,
+    /// Database row ID — `Some` only when the match is accepted.
+    pub match_id: Option<i64>,
+    /// Opaque UUID token — `Some` only when the request is pending in Redis.
+    pub pending_token: Option<String>,
     pub from_discord_id: String,
     pub to_discord_id: String,
-    /// true = accepted connection in DB, false = pending request in Redis
+    /// `true` = accepted connection in DB, `false` = pending request in Redis.
     pub is_accepted: bool,
     pub created_at: NaiveDateTime,
 }
